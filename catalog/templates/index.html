@@ -1,0 +1,173 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+
+
+    <!-- header -->
+    <header id = "header" class = "carousel slide" data-bs-ride = "carousel" ">
+        <div class="banner">
+            <img src={% static "images/main_banner.webp" %} alt="">    
+        </div>
+    </header>
+    <!-- end of header -->
+
+    <!-- collection -->
+    <section id = "collection" class = "py-5">
+        <div class = "container">
+            <div class = "title text-center">
+                <h2 class = "position-relative d-inline-block">Our Collection</h2>
+            </div>
+
+            <div class = "row g-0">
+                <div class = "d-flex flex-wrap justify-content-center mt-5 filter-button-group">
+                    <button type = "button" class = "btn m-2 text-dark active-filter-btn" data-filter = "*">All</button>
+                    <a href="{% url "catalog:collections_catagory" "Office_Essentials" %}"><button type = "button" class = "btn m-2 text-dark" data-filter = ".best">Office Essentials</button></a>
+                    <a href="{% url "catalog:collections_catagory" "Stationary" %}"><button type = "button" class = "btn m-2 text-dark" data-filter = ".feat">Staionary</button></a>
+                    <a href="{% url "catalog:collections_catagory" "Bussiness_items" %}"><button type = "button" class = "btn m-2 text-dark" data-filter = ".new">Bussiness items</button></a>
+                </div>
+
+                <div class = "collection-list mt-4 row gx-0 gy-3">
+
+                  {% for product in collection_products %}
+                  <div class = "col-md-6 col-lg-4 col-xl-3 p-2 best">
+                      <a href="{% url "catalog:product_detail" product.category.name product.name %}">
+                        <div class = "collection-img position-relative">
+                            <img src = "{{ product.images.url }}" class = "w-100">
+                            <span class = "position-absolute bg-primary text-white d-flex align-items-center justify-content-center">sale</span>
+                        </div>
+                        <div class = "text-center">
+                            <div class = "rating mt-3">
+                                <span class = "text-primary"><i class = "fas fa-star"></i></span>
+                                <span class = "text-primary"><i class = "fas fa-star"></i></span>
+                                <span class = "text-primary"><i class = "fas fa-star"></i></span>
+                                <span class = "text-primary"><i class = "fas fa-star"></i></span>
+                                <span class = "text-primary"><i class = "fas fa-star"></i></span>
+                            </div>
+                            <p class = "text-capitalize my-1">{{product.name}}</p>
+                            <span class = "fw-bold">Rs. {{product.price}}</span>
+                        </div>
+                      </a>
+                    </div>
+                  {% endfor %}
+
+
+
+                </div>
+            </div>
+
+            {% comment %} <div class = "title text-center">
+                <a href="{% url "catalog:collections" %}"><span>View All >></span></a>
+            </div> {% endcomment %}
+        </div>
+    </section>
+    <!-- end of collection -->
+
+    <!-- special products -->
+    <section id = "special" class = "py-5">
+        <div class = "container">
+            <div class = "title text-center py-5">
+                <h2 class = "position-relative d-inline-block">Special Selection</h2>
+            </div>
+
+            <div class = "special-list row g-0">
+
+              {% for product in special_products  %}
+
+                <div class = "col-md-6 col-lg-4 col-xl-3 p-2">
+                  <a href="{% url "catalog:product_detail" catagory=product.category.name name=product.name %}">
+                    <div class = "special-img position-relative overflow-hidden">
+                        <img src = "{{product.images.url}}" class = "w-100">
+                        <span class = "position-absolute d-flex align-items-center justify-content-center text-primary fs-4">
+                            <i class = "fas fa-heart"></i>
+                        </span>
+                    </div>
+                    <div class = "text-center">
+                        <p class = "text-capitalize mt-3 mb-1">{{product.name}}</p>
+                        <span class = "fw-bold d-block">Rs. {{product.price}}</span>
+                        <a href = "{% url "catalog:add_to_cart" product.id %}" class = "btn btn-primary mt-3">Add to Cart</a>
+                    </div>
+                  </a>
+                </div>
+                
+              {% endfor %}
+
+
+            </div>
+        </div>
+    </section>
+    <!-- end of special products -->
+
+    <!-- popular -->
+    <section id = "popular" class = "py-5">
+        <div class = "container">
+            <div class = "title text-center pt-3 pb-5">
+                <h2 class = "position-relative d-inline-block ms-4">Popular Of This Year</h2>
+            </div>
+
+            <div class = "row">
+                <div class = "col-md-6 col-lg-6 row g-3">
+                    <h3 class = "fs-5">Top Rated</h3>
+
+                    {% for product in top_products %}
+
+                      <div class = "d-flex align-items-start justify-content-start">
+                        <a href="{% url "catalog:product_detail" catagory=product.category.name name=product.name %}">
+                            <img src = "{{product.images.url}}" alt = "" class = "img-fluid pe-3 w-25">
+                        <div>
+                              <p class = "mb-0">{{product.name}}</p>
+                              <span>Rs. {{product.price}}</span>
+                          </div>
+                        </a>
+                      </div>
+
+                    {% endfor %}
+
+                </div>
+
+                <div class = "col-md-6 col-lg-6 row g-3">
+                    <h3 class = "fs-5">Best Selling</h3>
+
+                    {% for product in best_selling_products  %}
+
+                    <div class = "d-flex align-items-start justify-content-start">
+                        <a href="{% url "catalog:product_detail" catagory=product.category.name name=product.name %}">
+                            <img src = "{{product.images.url}}" alt = "" class = "img-fluid pe-3 w-25">
+                        <div>
+                            <p class = "mb-0">{{product.name}}</p>
+                            <span>Rs. {{product.price}}</span>
+                        </div>
+                      </a>
+                    </div>
+
+                    {% endfor %}
+
+                </div>
+
+            </div>
+        </div>
+    </section>
+    <!-- end of popular -->
+
+    <!-- newsletter -->
+    <section id = "newsletter" class = "py-5">
+        <div class = "container">
+            <div class = "d-flex flex-column align-items-center justify-content-center">
+                <div class = "title text-center pt-3 pb-5">
+                    <h2 class = "position-relative d-inline-block ms-4">Reach Out to Us</h2>
+                </div>
+
+                <div class = "input-group mb-3 mt-3">
+                    <input type = "text" class = "form-control" placeholder="Enter Your Email ...">
+                    <button class = "btn btn-primary" type = "submit">Contact</button>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- end of newsletter -->
+
+
+{% endblock content %}
+
+
+

@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+        <div class="container">
+            <div class="register-main">
+
+                <input type="checkbox" name="" id="chk" aria-hidden="true">
+
+                <div class="register-signup">
+
+                    <form method="post">
+                        {% csrf_token %}
+                        <label class="register-label" for="chk" aria-hidden="true">Sign up</label>
+                        <input class="register-input" type="text" name="username" placeholder="User name" required="">
+
+                        <input class="register-input" type="number" name="phone_number" id="" placeholder="phone no" required="">
+
+                        <input type="password" class="register-input" name="password1" placeholder="password" id="" required="">
+                        <input  class="register-input" type="password" name="password2" placeholder="confirm password" id="" required="">
+                        <button class="register-button" type="submit">sign Up</button>
+
+                        <p>Don't have account? <a href="{% url "login" %}">login</a>.</p>
+
+                    </form>
+                </div>
+
+
+            </div>
+        </div>
+{% endblock content %}   

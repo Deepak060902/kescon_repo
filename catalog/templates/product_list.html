@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+
+
+    <!-- collection -->
+    <section id = "collection" class = "py-5">
+        <div class = "container">
+            <div class = "title text-center">
+                <h2 class = "position-relative d-inline-block">Results for "{{search_input}}"</h2>
+            </div>
+
+                <div class = "collection-list mt-4 row gx-0 gy-3">
+
+                  {% for product in search_products %}
+                  <div class = "col-md-6 col-lg-4 col-xl-3 p-2 best">
+                      <a href="{% url "catalog:product_detail" product.category.name product.name %}">
+                        <div class = "collection-img position-relative">
+                            <img src = "{{ product.images.url }}" class = "w-100">
+                            <span class = "position-absolute bg-primary text-white d-flex align-items-center justify-content-center">sale</span>
+                        </div>
+                        <div class = "text-center">
+                            <div class = "rating mt-3">
+                                <span class = "text-primary"><i class = "fas fa-star"></i></span>
+                                <span class = "text-primary"><i class = "fas fa-star"></i></span>
+                                <span class = "text-primary"><i class = "fas fa-star"></i></span>
+                                <span class = "text-primary"><i class = "fas fa-star"></i></span>
+                                <span class = "text-primary"><i class = "fas fa-star"></i></span>
+                            </div>
+                            <p class = "text-capitalize my-1">{{product.name}}</p>
+                            <span class = "fw-bold">Rs. {{product.price}}</span>
+                        </div>
+                      </a>
+                    </div>
+                  {% endfor %}
+
+
+
+                </div>
+            </div>
+
+
+        </div>
+    </section>
+    <!-- end of collection -->
+
+
+
+
+{% endblock content %}
+
+
+
+
+
+

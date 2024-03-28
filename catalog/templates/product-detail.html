@@ -1,0 +1,161 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+
+    
+
+<div class = "container ">
+  <div class = "card">
+    <!-- card left -->
+    <div class = "product-imgs">
+      <div class = "img-display">
+        <div class = "img-showcase">
+          <img src = "{{product.images.url}}" alt = "shoe image">
+          <img src = "{% static "/images/planners.png" %}" alt = "shoe image">
+          <img src = "{% static "/images/planners.png" %}" alt = "shoe image">
+          <img src = "{% static "/images/planners.png" %}" alt = "shoe image">
+          <!-- <img src = "shoes_images/shoe_3.jpg" alt = "shoe image">
+          <img src = "shoes_images/shoe_4.jpg" alt = "shoe image"> -->
+        </div>
+      </div>
+     <div class = "img-select">
+        <div class = "img-item">
+          <a href = "#" data-id = "1">
+            <img src = "{% static "/images/planners.png" %}" alt = "shoe image">
+          </a>
+        </div>
+        <div class = "img-item">
+          <a href = "#" data-id = "1">
+            <img src = "{% static "/images/planners.png" %}" alt = "shoe image">
+          </a>
+        </div>
+        <div class = "img-item">
+          <a href = "#" data-id = "1">
+            <img src = "{% static "/images/planners.png" %}" alt = "shoe image">
+          </a>
+        </div>
+        <div class = "img-item">
+          <a href = "#" data-id = "1">
+            <img src = "{% static "/images/planners.png" %}" alt = "shoe image">
+          </a>
+        </div>
+        <div class = "img-item">
+          <a href = "#" data-id = "1">
+            <img src = "{% static "/images/planners.png" %}" alt = "shoe image">
+          </a>
+        </div>
+        <div class = "img-item">
+          <a href = "#" data-id = "1">
+            <img src = "{% static "/images/planners.png" %}" alt = "shoe image">
+          </a>
+        </div>
+
+      </div>
+    </div>
+    <!-- card right -->
+    <div class = "product-content">
+      <h2 class = "product-title">{{product.name}}</h2>
+      <div class = "product-rating">
+        <i class = "fas fa-star"></i>
+        <i class = "fas fa-star"></i>
+        <i class = "fas fa-star"></i>
+        <i class = "fas fa-star"></i>
+        <i class = "fas fa-star-half-alt"></i>
+        <span>4.7(21)</span>
+      </div>
+
+      <div class = "product-price">
+        <p class = "new-price">Price: <span>Rs. {{product.price}}</span></p>
+        <!-- <p class = "new-price">New Price: <span>$249.00 (5%)</span></p> -->
+      </div>
+
+      <div class = "product-detail">
+        <h2>about this item: </h2>
+        {{ product.description|safe }}
+      </div>
+
+      <div class="quantity">
+          <h3 class="label">Quantity:</h3>
+          <div class="quantity-box">
+            <button class="decrease">-</button>
+            <input type="number" id="quantityInput" min="1" value="1">
+            <button class="increase">+</button>
+          </div>
+      </div>
+      <div class = "purchase-info">
+        {% if product.stock_quantity != 0 %}
+        <div>
+            <button type = "button" class = "product-btn buy-btn">Buy it Now</button>
+        </div>
+        {% else %}
+        <div>
+            <button type = "button" disabled class = "product-btn stock-btn">Out Of Stock</button>
+        </div>
+        {% endif %}
+        <div >
+          <a href="{% url "catalog:add_to_cart" product.id %}">
+            <button type = "button" class = "product-btn product-cart-btn">        
+                Add to Cart</i>
+            </button>
+          </a>
+        </div>
+      </div>
+
+
+    </div>
+  </div>
+
+</div>
+  
+
+
+<script>
+      function addToCart(productId) {
+        var quantity = document.getElementById('quantityInput').value;
+        var url = "{% url 'catalog:add_to_cart' product.id %}";
+
+        // Send an AJAX request to add the product to the cart
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}'
+            },
+            body: JSON.stringify({
+                'product_id': productId,
+                'quantity': quantity
+            })
+        })
+        .then(response => {
+            // Handle the response as needed
+            console.log('Product added to cart successfully');
+        })
+        .catch(error => {
+            console.error('Error adding product to cart:', error);
+        });
+    }
+    // Get quantity input element
+const quantityInput = document.getElementById('quantityInput');
+
+// Get increase and decrease buttons
+const increaseBtn = document.querySelector('.increase');
+const decreaseBtn = document.querySelector('.decrease');
+
+// Add event listener for increase button
+increaseBtn.addEventListener('click', function() {
+  // Increment quantity value
+  quantityInput.value = parseInt(quantityInput.value) + 1;
+});
+
+// Add event listener for decrease button
+decreaseBtn.addEventListener('click', function() {
+  // Decrement quantity value if it's greater than 1
+  if (parseInt(quantityInput.value) > 1) {
+    quantityInput.value = parseInt(quantityInput.value) - 1;
+  }
+});
+
+</script>
+
+
+{% endblock content %}

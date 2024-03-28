@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+
+<div class="container cart-page"> 
+
+	<table>
+		<tr>
+			<th>Product</th>
+			<th>Quantity</th>
+			<th>Subtotal</th>
+		</tr>
+
+		{% for order_item in items  %}
+		  
+		<tr>
+			<td>
+				<div class="cart-info">
+					<img src="{{order_item.product.images.url}}" alt="">
+					<div>
+						<p>{{ order_item.product.name }}</p>
+						<small>Price: Rs. {{order_item.product.price}}</small>
+						<br>
+						<a href="{% url 'catalog:remove_from_cart' order_item.id %}">Remove</a>
+					</div>
+				</div>
+			</td>
+			<td>    
+
+				<input type="number" min="1" value="{{order_item.quantity}}">
+		</td>
+			<td>Rs. {{order_item.get_total}}</td>
+		</tr>
+
+        {% endfor %}
+
+
+	</table>
+
+	<div class="total-price">
+
+		<table>
+			<tr>
+			<td>Total Items</td>
+				<td>{{order.get_cart_items}}</td>
+			</tr>
+
+			<tr>
+			<td>Total</td>
+				<td>Rs. {{order.get_cart_total}}</td>
+			</tr>
+		</table>
+	</div>
+	<div>
+		<a href="#">
+			<button  class="cart-buy-btn">Order</button>
+		</a>
+	</div>
+</div>
+<script>
+    // Get quantity input element
+const quantityInput = document.getElementById('quantityInput');
+
+// Get increase and decrease buttons
+const increaseBtn = document.querySelector('.increase');
+const decreaseBtn = document.querySelector('.decrease');
+
+// Add event listener for increase button
+increaseBtn.addEventListener('click', function() {
+  // Increment quantity value
+  quantityInput.value = parseInt(quantityInput.value) + 1;
+});
+
+// Add event listener for decrease button
+decreaseBtn.addEventListener('click', function() {
+  // Decrement quantity value if it's greater than 1
+  if (parseInt(quantityInput.value) > 1) {
+    quantityInput.value = parseInt(quantityInput.value) - 1;
+  }
+});
+
+</script>
+{% endblock content %}

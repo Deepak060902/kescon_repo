@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+        <div class="container">
+            <div class="register-main">
+
+                <div class="register-login">
+
+                    <form action="" method="POST">
+                        {% csrf_token %}
+                        <label for="chk" class="register-label" aria-hidden="true">Login</label>
+
+                        <input class="register-input" type="username" name="username" id="" placeholder="Email or Username" required="">
+
+                        <input  class="register-input" type="password" name="password" placeholder="password" id="" required="">
+                        
+                        <button class="register-button" type="submit">Login</button>
+
+                        <p>Don't have account? <a href="{% url "register" %}">Create account</a>.</p>
+
+                    </form>
+
+                </div> 
+
+            </div>
+        </div>
+{% endblock content %}   

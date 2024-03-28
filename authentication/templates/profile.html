@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+    {% block content %}
+    <div class="container">
+        <div class="register-main" style="height: 510px;">
+
+            <input type="checkbox" name="" id="chk" aria-hidden="true">
+
+            <div class="register-signup" style="height: 380px;">
+                <label class="register-label" for="chk" aria-hidden="true" style="font-size:25px;">Customer Detail</label>
+                <p><strong>Username:</strong> {{customer.user.username}}</p>
+                <p><strong>email:</strong> {{customer.email}}</p>
+                <p><strong>Shipping Address:</strong> {{customer.shipping_address}}</p>
+                <p><strong>billing Address:</strong> {{customer.billing_address}}</p>
+            </div>
+            <div class="container " style="text-align: center;" >
+                <form id="frm_logout" method="post" action="{% url 'logout' %}">     
+                    {% csrf_token %}     
+                    <button type="submit" class=" btn btn-register" style="box-shadow: 1px 12px 20px 0 #000;">Logout</button> 
+                </form>
+            </div>
+        </div>
+        </div>
+
+    {% endblock content %}
