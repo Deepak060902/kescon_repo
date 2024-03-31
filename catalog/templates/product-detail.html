@@ -2,8 +2,6 @@
 {% load static %}
 {% block content %}
 
-    
-
 <div class = "container ">
   <div class = "card">
     <!-- card left -->
@@ -14,8 +12,8 @@
           <img src = "{% static "/images/planners.png" %}" alt = "shoe image">
           <img src = "{% static "/images/planners.png" %}" alt = "shoe image">
           <img src = "{% static "/images/planners.png" %}" alt = "shoe image">
-          <!-- <img src = "shoes_images/shoe_3.jpg" alt = "shoe image">
-          <img src = "shoes_images/shoe_4.jpg" alt = "shoe image"> -->
+          <img src = "{% static "/images/planners.png" %}" alt = "shoe image">
+
         </div>
       </div>
      <div class = "img-select">
@@ -25,30 +23,26 @@
           </a>
         </div>
         <div class = "img-item">
-          <a href = "#" data-id = "1">
+          <a href = "#" data-id = "2">
             <img src = "{% static "/images/planners.png" %}" alt = "shoe image">
           </a>
         </div>
         <div class = "img-item">
-          <a href = "#" data-id = "1">
+          <a href = "#" data-id = "3">
             <img src = "{% static "/images/planners.png" %}" alt = "shoe image">
           </a>
         </div>
         <div class = "img-item">
-          <a href = "#" data-id = "1">
+          <a href = "#" data-id = "4">
             <img src = "{% static "/images/planners.png" %}" alt = "shoe image">
           </a>
         </div>
         <div class = "img-item">
-          <a href = "#" data-id = "1">
+          <a href = "#" data-id = "5">
             <img src = "{% static "/images/planners.png" %}" alt = "shoe image">
           </a>
         </div>
-        <div class = "img-item">
-          <a href = "#" data-id = "1">
-            <img src = "{% static "/images/planners.png" %}" alt = "shoe image">
-          </a>
-        </div>
+
 
       </div>
     </div>
@@ -66,7 +60,6 @@
 
       <div class = "product-price">
         <p class = "new-price">Price: <span>Rs. {{product.price}}</span></p>
-        <!-- <p class = "new-price">New Price: <span>$249.00 (5%)</span></p> -->
       </div>
 
       <div class = "product-detail">
@@ -94,14 +87,16 @@
         {% endif %}
         <div >
           <a href="{% url "catalog:add_to_cart" product.id %}">
-            <button type = "button" class = "product-btn product-cart-btn">        
-                Add to Cart</i>
-            </button>
+            <div>
+              <form method="post" action="{% url 'catalog:add_to_cart' product.id %}">
+                  {% csrf_token %}
+                  <input type="hidden" name="quantity" id="quantity" value="1">
+                  <button type="submit" class="product-btn product-cart-btn">Add to Cart</button>
+              </form>
+          </div>  
           </a>
         </div>
       </div>
-
-
     </div>
   </div>
 
@@ -110,52 +105,51 @@
 
 
 <script>
-      function addToCart(productId) {
-        var quantity = document.getElementById('quantityInput').value;
-        var url = "{% url 'catalog:add_to_cart' product.id %}";
+  // Get quantity input element
+  const quantityInput = document.getElementById('quantityInput');
+  const quantityHiddenInput = document.getElementById('quantity');
 
-        // Send an AJAX request to add the product to the cart
-        fetch(url, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': '{{ csrf_token }}'
-            },
-            body: JSON.stringify({
-                'product_id': productId,
-                'quantity': quantity
-            })
-        })
-        .then(response => {
-            // Handle the response as needed
-            console.log('Product added to cart successfully');
-        })
-        .catch(error => {
-            console.error('Error adding product to cart:', error);
-        });
-    }
-    // Get quantity input element
-const quantityInput = document.getElementById('quantityInput');
+  // Get increase and decrease buttons
+  const increaseBtn = document.querySelector('.increase');
+  const decreaseBtn = document.querySelector('.decrease');
 
-// Get increase and decrease buttons
-const increaseBtn = document.querySelector('.increase');
-const decreaseBtn = document.querySelector('.decrease');
+  // Add event listener for increase button
+  increaseBtn.addEventListener('click', function() {
+      // Increment quantity value
+      quantityInput.value = parseInt(quantityInput.value) + 1;
+      quantityHiddenInput.value = quantityInput.value; // Update hidden input value
+  });
 
-// Add event listener for increase button
-increaseBtn.addEventListener('click', function() {
-  // Increment quantity value
-  quantityInput.value = parseInt(quantityInput.value) + 1;
+  // Add event listener for decrease button
+  decreaseBtn.addEventListener('click', function() {
+      // Decrement quantity value if it's greater than 1
+      if (parseInt(quantityInput.value) > 1) {
+          quantityInput.value = parseInt(quantityInput.value) - 1;
+          quantityHiddenInput.value = quantityInput.value; // Update hidden input value
+      }
+  });
+
+const imgs = document.querySelectorAll('.img-select a');
+const imgBtns = [...imgs];
+let imgId = 1;
+
+imgBtns.forEach((imgItem) => {
+    imgItem.addEventListener('click', (event) => {
+        event.preventDefault();
+        imgId = imgItem.dataset.id;
+        slideImage();
+    });
 });
 
-// Add event listener for decrease button
-decreaseBtn.addEventListener('click', function() {
-  // Decrement quantity value if it's greater than 1
-  if (parseInt(quantityInput.value) > 1) {
-    quantityInput.value = parseInt(quantityInput.value) - 1;
-  }
-});
+function slideImage(){
+    const displayWidth = document.querySelector('.img-showcase img:first-child').clientWidth;
 
+    document.querySelector('.img-showcase').style.transform = `translateX(${- (imgId - 1) * displayWidth}px)`;
+}
+
+window.addEventListener('resize', slideImage);
 </script>
+
 
 
 {% endblock content %}

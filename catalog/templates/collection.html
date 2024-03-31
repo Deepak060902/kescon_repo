@@ -3,37 +3,35 @@
 
    {% block content %}
    <!-- special products -->
-    <section id = "special" class = "py-5">
-        <div class = "container">
-            <div class = "title text-center py-5">
-                <h2 class = "position-relative d-inline-block">{{catagory}} Collections</h2>
-            </div>
-
-            <div class = "special-list row g-0">
-
-              {% for product in products  %}
-              <div class = "col-md-6 col-lg-4 col-xl-3 p-2">
-                <a href="{% url "catalog:product_detail" product.category.name product.name %}">
-                    <div class = "special-img position-relative overflow-hidden">
-                        <img src = "{{product.images.url}}" class = "w-100">
-                        <span class = "position-absolute d-flex align-items-center justify-content-center text-primary fs-4">
-                            <i class = "fas fa-heart"></i>
-                        </span>
-                    </div>
-                    <div class = "text-center">
-                        <p class = "text-capitalize mt-3 mb-1">{{product.name}}</p>
-                        <span class = "fw-bold d-block">Rs. {{product.price}}</span>
-                        <a href = "{% url "catalog:add_to_cart" product.id %}" class = "btn btn-primary mt-3">Add to Cart</a>
-                    </div>
-                </a>
-                </div>
-                
-              {% endfor %}
-
-
-            </div>
+   <section id = "special" class = "py-5">
+    <div class = "container">
+        <div class = "title py-5" style="text-align: center;">
+            <h2 class = "position-relative d-inline-block">{{catagory}} Collections</h2>
         </div>
-    </section>
+
+        <div class = "special-list row g-0">
+
+          {% for product in products  %}
+            <div class = "col-md-6 col-lg-4 col-xl-3 p-2" style=" box-shadow: 0 0 20px 0 #eee;">
+              <a href="{% url "catalog:product_detail" catagory=product.category.name name=product.name %}">
+                <div class = "special-img position-relative overflow-hidden">
+                    <img src = "{{product.images.url}}" class = "w-100" style="height: 310px;     object-fit: contain;">
+                    <span class = "position-absolute d-flex align-items-center justify-content-center text-primary fs-4">
+                        <i class = "fas fa-heart"></i>
+                    </span>
+                </div>
+                <div class = "text-center">
+                    <p class = "text-capitalize mt-3 mb-1">{{product.name}}</p>
+                    <span class = "fw-bold d-block">Rs. {{product.price}}</span>
+                    <a href = "{% url "catalog:add_to_cart" product.id %}" class = "btn btn-primary" style="width: max-content; align-self:center;">Add to Cart</a>
+                </div>
+              </a>
+            </div>
+          {% endfor %}
+
+        </div>
+    </div>
+</section>
     <!-- end of special products -->
 
     {% endblock content %}

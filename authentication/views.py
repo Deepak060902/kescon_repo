@@ -8,14 +8,10 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login , logout
 
 
-@login_required(login_url='login')
-def home(request):
-    return render(request, 'home.html')
-
 def register(request):
     if request.method =='POST':
         uname = request.POST.get('username')
-        phone_number = request.POST.get('email')
+        phone_number = request.POST.get('phone_number')
         pass1 = request.POST.get('password1')
         pass2 = request.POST.get('password2')
 

@@ -202,11 +202,18 @@ footer a:hover{
     }
 }
 
-
+.text-center {
+    display: flex;
+    flex-direction: column;
+    text-align: center!important;
+    height: 150px;
+    justify-content: space-between;
+}
 
 
 .search-form-container{
     display: inline-block;
+    width: 100%;
 }
 
 .search-form-container input:focus-visible {
@@ -219,5 +226,19 @@ footer a:hover{
     background-color: #eee;
     border-radius: 25px;
     font: var(--sm-font);
+    width: 75%;
+}
+.search-form-container form button:hover{
+    color: #0a58ca;
+}
+
+.search-form-box{
+    width: 70%;
+}
+@media only screen and (max-width:990px){
+    .search-form-box{
+        width: 100%;
+    }
+    
 }
 

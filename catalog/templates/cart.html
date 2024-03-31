@@ -1,6 +1,4 @@
 {% extends "base.html" %}
-
-
 {% block content %}
 
 <div class="container cart-page"> 
@@ -12,8 +10,7 @@
 			<th>Subtotal</th>
 		</tr>
 
-		{% for order_item in items  %}
-		  
+		{% for order_item in items  %} 
 		<tr>
 			<td>
 				<div class="cart-info">
@@ -27,14 +24,11 @@
 				</div>
 			</td>
 			<td>    
-
 				<input type="number" min="1" value="{{order_item.quantity}}">
 		</td>
 			<td>Rs. {{order_item.get_total}}</td>
 		</tr>
-
         {% endfor %}
-
 
 	</table>
 

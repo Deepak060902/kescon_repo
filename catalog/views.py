@@ -19,8 +19,10 @@ def index(request):
     if request.user.is_anonymous:
         order = None
     else:
-        # order = None
-        order = Order.objects.get(customer=request.user.customer)
+        try:
+            order = Order.objects.get(customer=request.user.customer)
+        except Order.DoesNotExist:
+            order = None
     context = {
         'collection_products': collection_products,
         'special_products': special_products,
@@ -31,34 +33,40 @@ def index(request):
 
     return render(request, 'index.html', context )
 
-def collections(request):
-    products = Product.objects.all()
-    if not request.user.is_anonymous:
-        order = Order.objects.get(customer=request.user.customer)
-    else:
-        order = None
-    context = {'order': order,"products": products}
-    return render(request, 'collection.html', context )
+# def collections(request):
+#     products = Product.objects.all()
+#     if not request.user.is_anonymous:
+#         order = Order.objects.get(customer=request.user.customer)
+#     else:
+#         order = None
+#     context = {'order': order,"products": products}
+#     return render(request, 'collection.html', context )
 
 def collections_catagory(request, catagory):
     catagory = catagory.replace("_"," ")
     category = get_object_or_404(Category, name=catagory)
     products = Product.objects.filter(category=category)
     # products = Product.objects.get(category.name = catagory)
-    if not request.user.is_anonymous:
-        order = Order.objects.get(customer=request.user.customer)
-    else:
+    if request.user.is_anonymous:
         order = None
+    else:
+        try:
+            order = Order.objects.get(customer=request.user.customer)
+        except Order.DoesNotExist:
+            order = None
     context = {'order': order,"products": products, "catagory": catagory }
     return render(request, 'collection.html',context )
     
 
 def product_detail(request, name, catagory):
     product = Product.objects.get(name=name)
-    if not request.user.is_anonymous:
-        order = Order.objects.get(customer=request.user.customer)
-    else:
+    if request.user.is_anonymous:
         order = None
+    else:
+        try:
+            order = Order.objects.get(customer=request.user.customer)
+        except Order.DoesNotExist:
+            order = None
     context = {'order': order,'product':product}
     return render(request, 'product-detail.html', context)
 
@@ -66,10 +74,11 @@ def product_detail(request, name, catagory):
 def add_to_cart(request, product_id):
     if request.user.is_anonymous:
         return redirect('catalog:index')
+    quantity = int(request.POST.get('quantity', 1))
     product = Product.objects.get(id=product_id)
     order, created = Order.objects.get_or_create(customer=request.user.customer)
     order_item, created = OrderItem.objects.get_or_create(order=order, product=product)
-    order_item.quantity += 1
+    order_item.quantity += quantity
     order_item.save()
     referer = request.META.get('HTTP_REFERER')
 
@@ -86,13 +95,6 @@ def remove_from_cart(request, order_item_id):
     order_item.delete()
     return redirect('catalog:cart')
 
-# def cart(request):
-
-#     order = Order.objects.get(customer=request.user.customer)
-#     order_items = order.orderitem_set.all()
-
-#     context = {'order': order, 'order_items': order_items}
-#     return render(request, 'cart.html', context)
 def cart(request):
     if request.user.is_anonymous:
         return redirect('catalog:index')
