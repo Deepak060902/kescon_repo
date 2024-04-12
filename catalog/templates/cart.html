@@ -1,78 +1,97 @@
+<!-- cart.html -->
 {% extends "base.html" %}
 {% block content %}
-
 <div class="container cart-page"> 
+    <table>
+        <!-- Table header -->
+        <tr>
+            <th>Product</th>
+            <th>Quantity</th>
+            <th>Subtotal</th>
+        </tr>
 
-	<table>
-		<tr>
-			<th>Product</th>
-			<th>Quantity</th>
-			<th>Subtotal</th>
-		</tr>
-
-		{% for order_item in items  %} 
-		<tr>
-			<td>
-				<div class="cart-info">
-					<img src="{{order_item.product.images.url}}" alt="">
-					<div>
-						<p>{{ order_item.product.name }}</p>
-						<small>Price: Rs. {{order_item.product.price}}</small>
-						<br>
-						<a href="{% url 'catalog:remove_from_cart' order_item.id %}">Remove</a>
-					</div>
-				</div>
-			</td>
-			<td>    
-				<input type="number" min="1" value="{{order_item.quantity}}">
-		</td>
-			<td>Rs. {{order_item.get_total}}</td>
-		</tr>
+        <!-- Loop through cart items -->
+        {% for order_item in items %}
+        <tr class="cart-item" data-item-id="{{ order_item.id }}">
+            <td>
+                <!-- Product info -->
+                <div class="cart-info">
+                    <img src="{{ order_item.product.images.url }}" alt="">
+                    <div>
+                        <p>{{ order_item.product.name }}</p>
+                        <small>Price: Rs. {{ order_item.product.price }}</small>
+                        <br>
+                        <a href="{% url 'catalog:remove_from_cart' order_item.id %}">Remove</a>
+                    </div>
+                </div>
+            </td>
+            <td>
+                <!-- Quantity input -->
+                <div class="quantity-box">
+                    <button class="decrease">-</button>
+                    <input type="number" class="quantityInput" min="1" value="{{ order_item.quantity }}">
+                    <button class="increase">+</button>
+                </div>
+            </td>
+            <td>Rs. {{ order_item.get_total }}</td>
+        </tr>
         {% endfor %}
+    </table>
 
-	</table>
+    <div class="total-price">
+        <!-- Display total items and total price -->
+        <table>
+            <tr>
+                <td>Total Items</td>
+                <td>{{ order.get_cart_items }}</td>
+            </tr>
+            <tr>
+                <td>Total</td>
+                <td>Rs. {{ order.get_cart_total }}</td>
+            </tr>
+        </table>
+    </div>
 
-	<div class="total-price">
-
-		<table>
-			<tr>
-			<td>Total Items</td>
-				<td>{{order.get_cart_items}}</td>
-			</tr>
-
-			<tr>
-			<td>Total</td>
-				<td>Rs. {{order.get_cart_total}}</td>
-			</tr>
-		</table>
-	</div>
-	<div>
-		<a href="#">
-			<button  class="cart-buy-btn">Order</button>
-		</a>
-	</div>
+    <div>
+        <!-- Order button (not implemented with Ajax in this example) -->
+        <a href="#">
+            <button class="cart-buy-btn">Order</button>
+        </a>
+    </div>
 </div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>
-    // Get quantity input element
-const quantityInput = document.getElementById('quantityInput');
+$(document).ready(function() {
+    // Handle quantity changes with Ajax
+    $('.quantity-box').on('click', '.increase, .decrease', function() {
+        var $button = $(this);
+        var oldValue = $button.siblings('.quantityInput').val();
+        var itemId = $button.closest('.cart-item').data('item-id');
+        var newValue = oldValue;
 
-// Get increase and decrease buttons
-const increaseBtn = document.querySelector('.increase');
-const decreaseBtn = document.querySelector('.decrease');
+        if ($button.hasClass('increase')) {
+            newValue = parseInt(oldValue) + 1;
+        } else {
+            newValue = parseInt(oldValue) - 1 > 0 ? parseInt(oldValue) - 1 : 1;
+        }
 
-// Add event listener for increase button
-increaseBtn.addEventListener('click', function() {
-  // Increment quantity value
-  quantityInput.value = parseInt(quantityInput.value) + 1;
+        // Update quantity input value
+        $button.siblings('.quantityInput').val(newValue);
+
+        // Send Ajax request to update cart item quantity
+        $.ajax({
+            url: `/update-cart/${itemId}/${newValue}/`,
+            method: 'GET',
+            success: function(response) {
+                // Update subtotal and total price on the page
+                // You may need to update the DOM based on the response
+            },
+            error: function(xhr, status, error) {
+                console.error(status + ": " + error);
+            }
+        });
+    });
 });
-
-// Add event listener for decrease button
-decreaseBtn.addEventListener('click', function() {
-  // Decrement quantity value if it's greater than 1
-  if (parseInt(quantityInput.value) > 1) {
-    quantityInput.value = parseInt(quantityInput.value) - 1;
-  }
-});
-
 </script>
 {% endblock content %}

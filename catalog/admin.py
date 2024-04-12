@@ -4,7 +4,6 @@ from .models import Product,  Category, Order, OrderItem, ShippingAddress
 
 # Register your models here.
 admin.site.register(Product)
-# admin.site.register(ProductImage)
 admin.site.register(Category)
 admin.site.register(Order)
 admin.site.register(OrderItem)

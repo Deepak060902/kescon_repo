@@ -14,6 +14,8 @@
     <!-- bootstrap css -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    
     <!-- <link rel = "stylesheet" href = "{% static "bootstrap-5.0.2-dist/css/bootstrap.min.css" %}"> -->
     <!-- custom css -->
     <link rel = "stylesheet" href = "{% static 'css/main.css' %}">
@@ -31,16 +33,41 @@
             </a>
 
             <div class = "order-lg-2 nav-btns">
+                {% if request.user.is_authenticated %}
                 <button type = "button" class = "btn position-relative">
                     <a href="{% url "catalog:cart" %}"><i class = "fa fa-shopping-cart"></i></a>
-                    <span class = "position-absolute top-0 start-100 translate-middle badge bg-primary">{{order.get_cart_items}}</span>
+                    <span class = "position-absolute top-0 start-100 translate-middle badge bg-primary" id="cartItemCount">{{order.get_cart_items}}</span>
                 </button>   
 
-                {% if request.user.is_authenticated %}
                 <button type = "button" class = "btn position-relative">
                     <a href="{% url "profile" %}"><i class = "fa fa-user"></i></a>
                 </button>
                 {% else %}
+                <button type = "button" class = "btn position-relative" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                   <i class = "fa fa-shopping-cart"></i>
+                </button>
+                <!-- Modal -->
+                <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                  <div class="modal-dialog">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title" id="staticBackdropLabel">Login</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                      </div>
+                      <div class="modal-body">
+                        You are not signed in.
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <a href="{% url "login" %}">
+                            <button type = "button" class = "login-btn position-relative">
+                                Login
+                            </button></a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
                 <a href="{% url "login" %}">
                 <button type = "button" class = "login-btn position-relative">
                     Login
@@ -143,7 +170,7 @@
                           </li>
                           <li>
                               <a href = "#" class = "text-white text-decoration-none text-muted fs-4 me-4">
-                                  <i class = "fab fa-pinterest"></i>
+                                  <i class = "fab fa-linkedin"></i>
                               </a>
                           </li>
                       </ul>
@@ -157,7 +184,6 @@
 
   <!-- jquery -->
   <!-- <script src = "{% static "js/jquery-3.6.0.js" %}"></script> -->
-
   <!-- bootstrap js -->
   <!-- <script src = "{% static "bootstrap-5.0.2-dist/js/bootstrap.min.js" %}"></script> -->
 

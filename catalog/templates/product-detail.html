@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
+
 {% block content %}
 
 <div class = "container ">
@@ -91,7 +92,34 @@
               <form method="post" action="{% url 'catalog:add_to_cart' product.id %}">
                   {% csrf_token %}
                   <input type="hidden" name="quantity" id="quantity" value="1">
-                  <button type="submit" class="product-btn product-cart-btn">Add to Cart</button>
+                  
+                  {% if request.user.is_authenticated %}
+                  <button type="submit" class="product-btn product-cart-btn" data-bs-toggle="modal" data-bs-target="#staticBackdrop" class = "btn btn-primary">Add to Cart</button>
+                  {% else %}
+                  <button type="reset" class="product-btn product-cart-btn" data-bs-toggle="modal" data-bs-target="#staticBackdrop" class = "btn btn-primary">Add to Cart</button>
+                   <!-- Modal -->
+                   <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                     <div class="modal-dialog">
+                       <div class="modal-content">
+                         <div class="modal-header">
+                           <h5 class="modal-title" id="staticBackdropLabel">Login</h5>
+                           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                         </div>
+                         <div class="modal-body">
+                           You are not signed in.
+                         </div>
+                         <div class="modal-footer">
+                           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                           <a href="{% url "login" %}">
+                               <button type = "button" class = "login-btn position-relative">
+                                   Login
+                               </button></a>
+                         </div>
+                       </div>
+                     </div>
+                   </div>
+                  {% endif %}
+
               </form>
           </div>  
           </a>
@@ -116,18 +144,29 @@
   // Add event listener for increase button
   increaseBtn.addEventListener('click', function() {
       // Increment quantity value
-      quantityInput.value = parseInt(quantityInput.value) + 1;
-      quantityHiddenInput.value = quantityInput.value; // Update hidden input value
+      updateQuantity(parseInt(quantityInput.value) + 1);
   });
 
   // Add event listener for decrease button
   decreaseBtn.addEventListener('click', function() {
       // Decrement quantity value if it's greater than 1
       if (parseInt(quantityInput.value) > 1) {
-          quantityInput.value = parseInt(quantityInput.value) - 1;
-          quantityHiddenInput.value = quantityInput.value; // Update hidden input value
+          updateQuantity(parseInt(quantityInput.value) - 1);
       }
   });
+
+  // Add event listener for input field
+  quantityInput.addEventListener('input', function() {
+      // Update quantity value
+      updateQuantity(parseInt(quantityInput.value));
+  });
+
+  function updateQuantity(value) {
+      // Update quantity input field
+      quantityInput.value = value;
+      // Update hidden input value
+      quantityHiddenInput.value = value;
+  }
 
 const imgs = document.querySelectorAll('.img-select a');
 const imgBtns = [...imgs];
@@ -149,7 +188,6 @@ function slideImage(){
 
 window.addEventListener('resize', slideImage);
 </script>
-
 
 
 {% endblock content %}

@@ -11,6 +11,7 @@ class Category(models.Model):
     def __str__(self):
         return self.name
 
+
 class Product(models.Model):
     name = models.CharField(max_length=200)
     description = RichTextField()
@@ -20,7 +21,6 @@ class Product(models.Model):
     images=models.ImageField(null=True, upload_to ='product_images/')
     stock_quantity = models.PositiveIntegerField(default=0)
     # on_sale = models.BooleanField(default=False) 
-    
     
     def __str__(self):
         return self.name
@@ -33,35 +33,6 @@ class Product(models.Model):
             url=''
         return url
 
-
-
-# class Product(models.Model):
-#     name = models.CharField(max_length=200)
-#     description = RichTextField()  # Assuming you're using CKEditor for rich text editing
-#     price = models.DecimalField(max_digits=10, decimal_places=2)
-#     category = models.ForeignKey(Category, on_delete=models.CASCADE) 
-#     brand = models.CharField(max_length=100, null=True, blank=True)
-#     stock_quantity = models.PositiveIntegerField(default=0)
-#     images=models.ImageField(null=True, upload_to ='product_images/')
-#     # on_sale = models.BooleanField(default=False) 
-
-#     def __str__(self):
-#         return self.name
-    
-#     @property
-#     def imageURL(self):
-#         try:
-#             url=self.image.url
-#         except:
-#             url=''
-#         return url 
-
-# class ProductImage(models.Model):
-#     product = models.ForeignKey(Product, related_name='images', on_delete=models.CASCADE)
-#     image = models.ImageField(upload_to='product_images/')  # Assuming you're storing images in a 'product_images' folder
-
-#     def __str__(self):
-#         return f"Image of {self.product.name}"
 
 class Order(models.Model):
     PENDING = 'Pending'
@@ -109,6 +80,7 @@ class Order(models.Model):
         total=sum([item.quantity for item in orderitems])
         return total        
 
+
 class OrderItem(models.Model):
     order= models.ForeignKey(Order, on_delete=models.SET_NULL,null=True)
     product=models.ForeignKey(Product, on_delete=models.SET_NULL,null=True)
@@ -124,6 +96,7 @@ class OrderItem(models.Model):
     def __str__(self):
         return f"{self.quantity} x {self.product.name} ({self.product.price} each)"
 
+
 class ShippingAddress(models.Model):
     customer=models.ForeignKey(Customer, on_delete=models.SET_NULL,null=True)
     order= models.ForeignKey(Order, on_delete=models.SET_NULL,null=True)
@@ -135,6 +108,7 @@ class ShippingAddress(models.Model):
 
     def __str__(self):
         return self.address
+
 
 
 

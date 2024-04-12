@@ -33,20 +33,11 @@ def index(request):
 
     return render(request, 'index.html', context )
 
-# def collections(request):
-#     products = Product.objects.all()
-#     if not request.user.is_anonymous:
-#         order = Order.objects.get(customer=request.user.customer)
-#     else:
-#         order = None
-#     context = {'order': order,"products": products}
-#     return render(request, 'collection.html', context )
 
 def collections_catagory(request, catagory):
     catagory = catagory.replace("_"," ")
     category = get_object_or_404(Category, name=catagory)
     products = Product.objects.filter(category=category)
-    # products = Product.objects.get(category.name = catagory)
     if request.user.is_anonymous:
         order = None
     else:
@@ -83,10 +74,8 @@ def add_to_cart(request, product_id):
     referer = request.META.get('HTTP_REFERER')
 
     if referer:
-        # Redirect back to the referer URL
         return redirect(referer)
     else:
-        # If referer is not available, redirect to a default URL
         return redirect('catalog:cart')
 
 
@@ -94,6 +83,7 @@ def remove_from_cart(request, order_item_id):
     order_item = OrderItem.objects.get(id=order_item_id)
     order_item.delete()
     return redirect('catalog:cart')
+
 
 def cart(request):
     if request.user.is_anonymous:
@@ -107,39 +97,19 @@ def cart(request):
     return render (request,'cart.html',context)
 
 
-def updateItem(request):
-    data=json.loads(request.body)
-    productId=data['productId']
-    action=data['action']
+def update_cart(request, item_id, new_quantity):
+    try:
+        order_item = OrderItem.objects.get(id=item_id)
+        order_item.quantity = new_quantity
+        order_item.save()
 
-    print('action:',action)
-    print('Product:',productId)
-
-    customer = request.user.customer
-    product= Product.objects.get(id=productId)   
-    order, create= Order.objects.get_or_create(customer=customer,complete=False)
-
-    orderItem, created = OrderItem.objects.get_or_create(order=order, product=product)
-     
-    if action=='add':
-        orderItem.quantity = (orderItem.quantity+1)
-    elif action=='remove':
-        orderItem.quantity = (orderItem.quantity-1)
-    
-    orderItem.save()
-
-    if orderItem.quantity <= 0:
-        orderItem.delete()
-
-    return  JsonResponse('item added',safe=False)
-
-
+        return JsonResponse({'success': True})
+    except OrderItem.DoesNotExist:
+        return JsonResponse({'success': False, 'error': 'Item not found'})
 
 class QuestionListView(ListView):
     model = Product
-
     context_object_name = 'search_products'
-    # ordering = ['-date_created']
     template_name = "product_list.html"
 
     def get_context_data(self, **kwargs):
@@ -151,6 +121,13 @@ class QuestionListView(ListView):
         else:
             order = None
 
+        if self.request.user.is_anonymous:
+            order = None
+        else:
+            try:
+                order = Order.objects.get(customer=self.request.user.customer)
+            except Order.DoesNotExist:
+                order = None
 
         if search_input:
             context['search_products'] = context['search_products'].filter(name__icontains = search_input)

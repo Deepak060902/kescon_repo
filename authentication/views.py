@@ -1,6 +1,6 @@
 
 from . models import Customer
-
+from catalog.models import Order
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
@@ -51,6 +51,15 @@ def profile(request):
     else:
 
         customer = None
-
-    context={"customer": customer}
+    if request.user.is_anonymous:
+        order = None
+    else:
+        try:
+            order = Order.objects.get(customer=request.user.customer)
+        except Order.DoesNotExist:
+            order = None
+    print("-----")
+    print(order)
+    print("-----")
+    context={"customer": customer,'order': order}
     return render(request, 'profile.html', context)

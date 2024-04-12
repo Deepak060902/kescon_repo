@@ -1,37 +1,62 @@
-   {% extends "base.html" %}
-   {% load static %}
+{% extends "base.html" %}
+{% load static %}
 
-   {% block content %}
-   <!-- special products -->
-   <section id = "special" class = "py-5">
-    <div class = "container">
-        <div class = "title py-5" style="text-align: center;">
-            <h2 class = "position-relative d-inline-block">{{catagory}} Collections</h2>
-        </div>
+{% block content %}
+<!-- special products -->
+<section id = "special" class = "py-5">
+  <div class = "container">
+      <div class = "title py-5" style="text-align: center;">
+          <h2 class = "position-relative d-inline-block">{{catagory}} Collections</h2>
+      </div>
 
-        <div class = "special-list row g-0">
+      <div class = "special-list row g-0">
+        {% for product in products  %}
+          <div class = "col-md-6 col-lg-4 col-xl-3 p-2" style=" box-shadow: 0 0 20px 0 #eee;">
+            <a href="{% url "catalog:product_detail" catagory=product.category.name name=product.name %}">
+              <div class = "special-img position-relative overflow-hidden">
+                  <img src = "{{product.images.url}}" class = "w-100" style="height: 310px;     object-fit: contain;">
+                  <span class = "position-absolute d-flex align-items-center justify-content-center text-primary fs-4">
+                      <i class = "fas fa-heart"></i>
+                  </span>
+              </div>
+              <div class = "text-center">
+                  <p class = "text-capitalize mt-3 mb-1">{{product.name}}</p>
+                  <span class = "fw-bold d-block">Rs. {{product.price}}</span>
 
-          {% for product in products  %}
-            <div class = "col-md-6 col-lg-4 col-xl-3 p-2" style=" box-shadow: 0 0 20px 0 #eee;">
-              <a href="{% url "catalog:product_detail" catagory=product.category.name name=product.name %}">
-                <div class = "special-img position-relative overflow-hidden">
-                    <img src = "{{product.images.url}}" class = "w-100" style="height: 310px;     object-fit: contain;">
-                    <span class = "position-absolute d-flex align-items-center justify-content-center text-primary fs-4">
-                        <i class = "fas fa-heart"></i>
-                    </span>
-                </div>
-                <div class = "text-center">
-                    <p class = "text-capitalize mt-3 mb-1">{{product.name}}</p>
-                    <span class = "fw-bold d-block">Rs. {{product.price}}</span>
-                    <a href = "{% url "catalog:add_to_cart" product.id %}" class = "btn btn-primary" style="width: max-content; align-self:center;">Add to Cart</a>
-                </div>
-              </a>
-            </div>
-          {% endfor %}
+                  {% if request.user.is_authenticated %}
+                  <a href = "{% url "catalog:add_to_cart" product.id %}" class = "btn btn-primary" style="width: max-content; align-self:center;">Add to Cart</a>
+                  {% else %}
+                  <a href = "{% url "catalog:add_to_cart" product.id %}"  data-bs-toggle="modal" data-bs-target="#staticBackdrop" class = "btn btn-primary" style="width: max-content; align-self:center;">Add to Cart</a>
+                    <!-- Modal -->
+                    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                      <div class="modal-dialog">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <h5 class="modal-title" id="staticBackdropLabel">Login</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                          </div>
+                          <div class="modal-body">
+                            You are not signed in.
+                          </div>
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <a href="{% url "login" %}">
+                                <button type = "button" class = "login-btn position-relative">
+                                    Login
+                                </button></a>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  {% endif %}
+          </div>
+            </a>
+          </div>
+        {% endfor %}
+      </div>
 
-        </div>
-    </div>
+  </div>
 </section>
-    <!-- end of special products -->
+<!-- end of special products -->
 
-    {% endblock content %}
+  {% endblock content %}

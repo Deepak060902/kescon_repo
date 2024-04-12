@@ -4,7 +4,7 @@
 
 
     <!-- header -->
-    <header id = "header" class = "carousel slide" data-bs-ride = "carousel" ">
+    <header id = "header" class = "carousel slide" data-bs-ride = "carousel">
         <div class="banner">
             <img src={% static "images/main_banner.webp" %} alt="">    
         </div>
@@ -76,7 +76,34 @@
                     <div class = "text-center">
                         <p class = "text-capitalize mt-3 mb-1">{{product.name}}</p>
                         <span class = "fw-bold d-block">Rs. {{product.price}}</span>
+
+                        {% if request.user.is_authenticated %}
                         <a href = "{% url "catalog:add_to_cart" product.id %}" class = "btn btn-primary" style="width: max-content; align-self:center;">Add to Cart</a>
+                        {% else %}
+                        <a href = "{% url "catalog:add_to_cart" product.id %}"  data-bs-toggle="modal" data-bs-target="#staticBackdrop" class = "btn btn-primary" style="width: max-content; align-self:center;">Add to Cart</a>
+                         <!-- Modal -->
+                         <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                           <div class="modal-dialog">
+                             <div class="modal-content">
+                               <div class="modal-header">
+                                 <h5 class="modal-title" id="staticBackdropLabel">Login</h5>
+                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                               </div>
+                               <div class="modal-body">
+                                 You are not signed in.
+                               </div>
+                               <div class="modal-footer">
+                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                 <!-- <button type="button" class="btn btn-primary">Login</button> -->
+                                 <a href="{% url "login" %}">
+                                     <button type = "button" class = "login-btn position-relative">
+                                         Login
+                                     </button></a>
+                               </div>
+                             </div>
+                           </div>
+                         </div>
+                        {% endif %}
                     </div>
                   </a>
                 </div>
@@ -150,7 +177,6 @@
         </div>
     </section>
     <!-- end of newsletter -->
-
 
 {% endblock content %}
 
